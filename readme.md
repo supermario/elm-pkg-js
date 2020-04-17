@@ -69,9 +69,9 @@ In either case, the design goals would ideally be the same, and work against the
 
 ### Non-Package JS
 
-This isn't about solving "user added JS", though perhaps a design here might lead to a nice encapsulation of user JS for some circumstances too.
+This isn't about solving "user added JS" (in contrast to "package added JS"), though perhaps a design here might lead to a nice encapsulation of user JS for some circumstances too.
 
-When user JS comes into play we also have to consider their entire environment, which is extremely difficult to unify for (i.e. say they use Rails as a backend and Webpack as build, or some completely different environment we don't anticipate).
+When user JS in a project comes into play we also have to consider their entire environment, which is extremely difficult to unify for (i.e. say they use Rails as a backend and Webpack as build, or some completely different environment we don't anticipate, or they're injecting Elm progressively into an existing JS app with it's own setup, assumptions, build pipeline, etc).
 
 Lamdera has no user written JS.
 
@@ -80,7 +80,7 @@ Lamdera has no user written JS.
 
 #### [billstclair/elm-port-funnel](https://package.elm-lang.org/packages/billstclair/elm-port-funnel/latest/)
 
-Bill St. Clair has the [elm-port-funnel](https://package.elm-lang.org/packages/billstclair/elm-port-funnel/latest/) package, which aligns with some of the probelm statement here;
+Bill St. Clair has the [elm-port-funnel](https://package.elm-lang.org/packages/billstclair/elm-port-funnel/latest/) package, which aligns with some of the problem statement here;
 
 > billstclair/elm-port-funnel allows you to use a single outgoing/incoming pair of ports to communicate with the JavaScript for any number of PortFunnel-aware modules, which I'm going to call "funnels".
 
@@ -103,6 +103,8 @@ This approach appears to be more suited to solving the stated problem, but still
 #### [peterszerzo/elm-porter](https://package.elm-lang.org/packages/peterszerzo/elm-porter/latest/)
 
 Was pointed out on Elm Slack, is specifically aimed at request/response modelling with ports but could be good to look over.
+
+Note: unsuitable as it expects functions to be stored in the msg and model types.
 
 
 #### [elm-community/js-integration-examples](https://github.com/elm-community/js-integration-examples)

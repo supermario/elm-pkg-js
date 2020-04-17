@@ -2,7 +2,7 @@ This repo explores the possibility of an API/standard/spec for Elm packages that
 
 ## Problem statement
 
-There are a number of common cases where Elm still requires external JS that haven't been codified in an elm/* or elm-explorations/* package.
+There are a number of common cases where Elm still requires external JS that haven't been codified in an `elm/*` or `elm-explorations/*` package.
 
 Examples are:
 

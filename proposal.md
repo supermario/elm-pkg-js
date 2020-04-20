@@ -25,7 +25,7 @@ An elm-pkg-js package called `my-package` must:
   - `myPackageJsIn`
   - `myPackageJsOut`
 
-  The kebab-case becomes camel case. I.e. `some-really-long-package` would become `someReallyLongPackageJs` suffixed by `Js[In|Out]`.
+  The kebab-case becomes camel case. I.e. `some-really-long-package` would become `someReallyLongPackage` suffixed by `Js[In|Out]`.
 
   :warning: TODO: what, if anything, should be done for a package that doesn't use one port or either port, i.e. a webcomponent package?
 

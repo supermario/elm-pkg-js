@@ -36,14 +36,14 @@ The following transformation from package name to port name happens:
 - `MartinSStewart_elm_audio`: replace any non `[a-zA-Z-]` with `_`
 - `martinsstewart_elm_audio`: lowercase to make it harder to make typos
 - add suffixes:
-   - `martinsstewart_elm_audio_js_in`
-   - `martinsstewart_elm_audio_js_out`
+   - `martinsstewart_elm_audio_from_js`
+   - `martinsstewart_elm_audio_to_js`
 
 Then the following port definitions are set at the top of the JS file.
 
 ```
-// port martinsstewart_elm_audio_js_in : (Json.Value -> msg) -> Sub msg
-// port martinsstewart_elm_audio_js_out : Json.Value -> Cmd msg
+// port martinsstewart_elm_audio_from_js : (Json.Value -> msg) -> Sub msg
+// port martinsstewart_elm_audio_to_js : Json.Value -> Cmd msg
 ```
 
 If the package uses no ports, there are no port annotations.

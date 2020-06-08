@@ -1,6 +1,6 @@
 ### copy-to-clipboard
 
-This is an [`elm-pkg-js`](https://github.com/supermario/elm-pkg-js) package that comes with some Javascript.
+This is an [`elm-pkg-js`](https://github.com/supermario/elm-pkg-js) compliant package that comes with some Javascript.
 
 #### Usage:
 

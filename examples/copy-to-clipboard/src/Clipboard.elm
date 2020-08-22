@@ -1,8 +1,33 @@
+{- @elm-pkg-js
+   port supermario_copy_to_clipboard_to_js : String -> Cmd msg
+-}
+
+
 module Clipboard exposing (..)
 
-import Ports
+{-| Provides a simple way to hook up Javascript copy-to-clipboard functionality
+
+@docs copy
+
+-}
 
 
-copy : String -> Cmd msg
-copy =
-    Ports.supermario_copy_to_clipboard_to_js
+type alias PkgPorts ports msg =
+    { ports | supermario_copy_to_clipboard_to_js : String -> Cmd msg }
+
+
+{-| Copy a String to the clipboard
+
+    import PkgPorts exposing (ports)
+
+
+    -- In your update function
+    update msg model =
+        case msg of
+            SomeMsg ->
+                ( model, copy ports "some string" )
+
+-}
+copy : PkgPorts a msg -> String -> Cmd msg
+copy ports =
+    ports.supermario_copy_to_clipboard_to_js

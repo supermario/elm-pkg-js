@@ -1,3 +1,11 @@
+{- @elm-pkg-js
+   import Audio
+   import Json.Encode as Json
+   port martinsstewart_elm_audio_to_js : Json.Value -> Cmd (Audio.Msg msg)
+   port martinsstewart_elm_audio_from_js : (Json.Value -> Audio.Msg msg) -> Sub (Audio.Msg msg)
+-}
+
+
 module Audio exposing
     ( elementWithAudio, documentWithAudio, applicationWithAudio, Model, Msg
     , AudioCmd, loadAudio, LoadError(..), Source, cmdMap, cmdBatch, cmdNone
@@ -135,10 +143,10 @@ mapAudioLoadRequest mapFunc audioLoadRequest =
     }
 
 
-{-| Ports that allows this package to communicate with the JS portion of the package.
+{-| Ports record that allows this package to communicate with the JS portion of the package.
 -}
-type alias Ports msg =
-    { toJS : JE.Value -> Cmd (Msg msg), fromJS : (JD.Value -> Msg msg) -> Sub (Msg msg) }
+type alias PkgPorts ports msg =
+    { ports | martinsstewart_elm_audio_to_js : JE.Value -> Cmd (Msg msg), martinsstewart_elm_audio_from_js : (JD.Value -> Msg msg) -> Sub (Msg msg) }
 
 
 getUserModel : Model userMsg userModel -> userModel
@@ -149,19 +157,20 @@ getUserModel (Model model) =
 {-| Browser.element but with the ability to play sounds.
 -}
 elementWithAudio :
-    { init : flags -> ( model, Cmd msg, AudioCmd msg )
-    , view : model -> Html msg
-    , update : msg -> model -> ( model, Cmd msg, AudioCmd msg )
-    , subscriptions : model -> Sub msg
-    , audio : model -> Audio
-    , audioPort : Ports msg
-    }
+    PkgPorts ports msg
+    ->
+        { init : flags -> ( model, Cmd msg, AudioCmd msg )
+        , view : model -> Html msg
+        , update : msg -> model -> ( model, Cmd msg, AudioCmd msg )
+        , subscriptions : model -> Sub msg
+        , audio : model -> Audio
+        }
     -> Platform.Program flags (Model msg model) (Msg msg)
-elementWithAudio app =
-    { init = app.init >> initHelper app.audioPort.toJS app.audio
+elementWithAudio ports app =
+    { init = app.init >> initHelper ports.martinsstewart_elm_audio_to_js app.audio
     , view = getUserModel >> app.view >> Html.map UserMsg
-    , update = update app
-    , subscriptions = subscriptions app
+    , update = update ports app
+    , subscriptions = subscriptions ports app
     }
         |> Browser.element
 
@@ -169,16 +178,17 @@ elementWithAudio app =
 {-| Browser.document but with the ability to play sounds.
 -}
 documentWithAudio :
-    { init : flags -> ( model, Cmd msg, AudioCmd msg )
-    , view : model -> Browser.Document msg
-    , update : msg -> model -> ( model, Cmd msg, AudioCmd msg )
-    , subscriptions : model -> Sub msg
-    , audio : model -> Audio
-    , audioPort : Ports msg
-    }
+    PkgPorts ports msg
+    ->
+        { init : flags -> ( model, Cmd msg, AudioCmd msg )
+        , view : model -> Browser.Document msg
+        , update : msg -> model -> ( model, Cmd msg, AudioCmd msg )
+        , subscriptions : model -> Sub msg
+        , audio : model -> Audio
+        }
     -> Platform.Program flags (Model msg model) (Msg msg)
-documentWithAudio app =
-    { init = app.init >> initHelper app.audioPort.toJS app.audio
+documentWithAudio ports app =
+    { init = app.init >> initHelper ports.martinsstewart_elm_audio_to_js app.audio
     , view =
         \model ->
             let
@@ -188,8 +198,8 @@ documentWithAudio app =
             { title = title
             , body = body |> List.map (Html.map UserMsg)
             }
-    , update = update app
-    , subscriptions = subscriptions app
+    , update = update ports app
+    , subscriptions = subscriptions ports app
     }
         |> Browser.document
 
@@ -197,18 +207,19 @@ documentWithAudio app =
 {-| Browser.application but with the ability to play sounds.
 -}
 applicationWithAudio :
-    { init : flags -> Url -> Key -> ( model, Cmd msg, AudioCmd msg )
-    , view : model -> Browser.Document msg
-    , update : msg -> model -> ( model, Cmd msg, AudioCmd msg )
-    , subscriptions : model -> Sub msg
-    , onUrlRequest : Browser.UrlRequest -> msg
-    , onUrlChange : Url -> msg
-    , audio : model -> Audio
-    , audioPort : Ports msg
-    }
+    PkgPorts ports msg
+    ->
+        { init : flags -> Url -> Key -> ( model, Cmd msg, AudioCmd msg )
+        , view : model -> Browser.Document msg
+        , update : msg -> model -> ( model, Cmd msg, AudioCmd msg )
+        , subscriptions : model -> Sub msg
+        , onUrlRequest : Browser.UrlRequest -> msg
+        , onUrlChange : Url -> msg
+        , audio : model -> Audio
+        }
     -> Platform.Program flags (Model msg model) (Msg msg)
-applicationWithAudio app =
-    { init = \flags url key -> app.init flags url key |> initHelper app.audioPort.toJS app.audio
+applicationWithAudio ports app =
+    { init = \flags url key -> app.init flags url key |> initHelper ports.martinsstewart_elm_audio_to_js app.audio
     , view =
         \model ->
             let
@@ -218,8 +229,8 @@ applicationWithAudio app =
             { title = title
             , body = body |> List.map (Html.map UserMsg)
             }
-    , update = update app
-    , subscriptions = subscriptions app
+    , update = update ports app
+    , subscriptions = subscriptions ports app
     , onUrlRequest = app.onUrlRequest >> UserMsg
     , onUrlChange = app.onUrlChange >> UserMsg
     }
@@ -229,16 +240,17 @@ applicationWithAudio app =
 {-| Lamdera.frontend but with the ability to play sounds (highly experimental, just ignore this for now).
 -}
 lamderaFrontendWithAudio :
-    { init : Url.Url -> Browser.Navigation.Key -> ( model, Cmd frontendMsg, AudioCmd frontendMsg )
-    , view : model -> Browser.Document frontendMsg
-    , update : frontendMsg -> model -> ( model, Cmd frontendMsg, AudioCmd frontendMsg )
-    , updateFromBackend : toFrontend -> model -> ( model, Cmd frontendMsg, AudioCmd frontendMsg )
-    , subscriptions : model -> Sub frontendMsg
-    , onUrlRequest : Browser.UrlRequest -> frontendMsg
-    , onUrlChange : Url -> frontendMsg
-    , audio : model -> Audio
-    , audioPort : Ports frontendMsg
-    }
+    PkgPorts ports frontendMsg
+    ->
+        { init : Url.Url -> Browser.Navigation.Key -> ( model, Cmd frontendMsg, AudioCmd frontendMsg )
+        , view : model -> Browser.Document frontendMsg
+        , update : frontendMsg -> model -> ( model, Cmd frontendMsg, AudioCmd frontendMsg )
+        , updateFromBackend : toFrontend -> model -> ( model, Cmd frontendMsg, AudioCmd frontendMsg )
+        , subscriptions : model -> Sub frontendMsg
+        , onUrlRequest : Browser.UrlRequest -> frontendMsg
+        , onUrlChange : Url -> frontendMsg
+        , audio : model -> Audio
+        }
     ->
         { init : Url.Url -> Browser.Navigation.Key -> ( Model frontendMsg model, Cmd (Msg frontendMsg) )
         , view : Model frontendMsg model -> Browser.Document (Msg frontendMsg)
@@ -248,8 +260,8 @@ lamderaFrontendWithAudio :
         , onUrlRequest : Browser.UrlRequest -> Msg frontendMsg
         , onUrlChange : Url -> Msg frontendMsg
         }
-lamderaFrontendWithAudio app =
-    { init = \url key -> initHelper app.audioPort.toJS app.audio (app.init url key)
+lamderaFrontendWithAudio ports app =
+    { init = \url key -> initHelper ports.martinsstewart_elm_audio_to_js app.audio (app.init url key)
     , view =
         \model ->
             let
@@ -259,11 +271,11 @@ lamderaFrontendWithAudio app =
             { title = title
             , body = body |> List.map (Html.map UserMsg)
             }
-    , update = update app
+    , update = update ports app
     , updateFromBackend =
         \toFrontend model ->
-            updateHelper app.audioPort.toJS app.audio (app.updateFromBackend toFrontend) model
-    , subscriptions = subscriptions app
+            updateHelper ports.martinsstewart_elm_audio_to_js app.audio (app.updateFromBackend toFrontend) model
+    , subscriptions = subscriptions ports app
     , onUrlRequest = app.onUrlRequest >> UserMsg
     , onUrlChange = app.onUrlChange >> UserMsg
     }
@@ -346,7 +358,7 @@ updateHelper :
     -> (userModel -> ( userModel, Cmd userMsg, AudioCmd userMsg ))
     -> Model userMsg userModel
     -> ( Model userMsg userModel, Cmd (Msg userMsg) )
-updateHelper audioPort audioFunc userUpdate (Model model) =
+updateHelper outPort audioFunc userUpdate (Model model) =
     let
         ( newUserModel, userCmd, audioCmds ) =
             userUpdate model.userModel
@@ -373,7 +385,7 @@ updateHelper audioPort audioFunc userUpdate (Model model) =
                 ]
     in
     ( newModel2
-    , Cmd.batch [ Cmd.map UserMsg userCmd, audioPort portMessage ]
+    , Cmd.batch [ Cmd.map UserMsg userCmd, outPort portMessage ]
     )
 
 
@@ -382,7 +394,7 @@ initHelper :
     -> (model -> Audio)
     -> ( model, Cmd userMsg, AudioCmd userMsg )
     -> ( Model userMsg model, Cmd (Msg userMsg) )
-initHelper audioPort audioFunc ( model, cmds, audioCmds ) =
+initHelper outPort audioFunc ( model, cmds, audioCmds ) =
     let
         ( audioState, newNodeGroupIdCounter, json ) =
             diffAudioState 0 Dict.empty (audioFunc model)
@@ -408,7 +420,7 @@ initHelper audioPort audioFunc ( model, cmds, audioCmds ) =
                 ]
     in
     ( initialModel2
-    , Cmd.batch [ Cmd.map UserMsg cmds, audioPort portMessage ]
+    , Cmd.batch [ Cmd.map UserMsg cmds, outPort portMessage ]
     )
 
 
@@ -452,18 +464,19 @@ removeAt index l =
 
 
 update :
-    { a
-        | audioPort : Ports userMsg
-        , audio : userModel -> Audio
-        , update : userMsg -> userModel -> ( userModel, Cmd userMsg, AudioCmd userMsg )
-    }
+    PkgPorts ports userMsg
+    ->
+        { a
+            | audio : userModel -> Audio
+            , update : userMsg -> userModel -> ( userModel, Cmd userMsg, AudioCmd userMsg )
+        }
     -> Msg userMsg
     -> Model userMsg userModel
     -> ( Model userMsg userModel, Cmd (Msg userMsg) )
-update app msg (Model model) =
+update ports app msg (Model model) =
     case msg of
         UserMsg userMsg ->
-            updateHelper app.audioPort.toJS app.audio (app.update userMsg) (Model model)
+            updateHelper ports.martinsstewart_elm_audio_to_js app.audio (app.update userMsg) (Model model)
 
         FromJSMsg response ->
             case response of
@@ -482,7 +495,7 @@ update app msg (Model model) =
                                     { model | pendingRequests = Dict.remove requestId model.pendingRequests }
                                         |> Model
                                         |> updateHelper
-                                            app.audioPort.toJS
+                                            ports.martinsstewart_elm_audio_to_js
                                             app.audio
                                             (app.update userMsg)
 
@@ -490,7 +503,7 @@ update app msg (Model model) =
                                     { model | pendingRequests = Dict.remove requestId model.pendingRequests }
                                         |> Model
                                         |> updateHelper
-                                            app.audioPort.toJS
+                                            ports.martinsstewart_elm_audio_to_js
                                             app.audio
                                             (Nonempty.head pendingRequest.userMsg |> Tuple.second |> app.update)
 
@@ -512,7 +525,7 @@ update app msg (Model model) =
                                     { model | pendingRequests = Dict.remove requestId model.pendingRequests }
                                         |> Model
                                         |> updateHelper
-                                            app.audioPort.toJS
+                                            ports.martinsstewart_elm_audio_to_js
                                             app.audio
                                             (app.update userMsg)
 
@@ -520,7 +533,7 @@ update app msg (Model model) =
                                     { model | pendingRequests = Dict.remove requestId model.pendingRequests }
                                         |> Model
                                         |> updateHelper
-                                            app.audioPort.toJS
+                                            ports.martinsstewart_elm_audio_to_js
                                             app.audio
                                             (Nonempty.head pendingRequest.userMsg |> Tuple.second |> app.update)
 
@@ -535,11 +548,12 @@ update app msg (Model model) =
 
 
 subscriptions :
-    { a | subscriptions : userModel -> Sub userMsg, audioPort : Ports userMsg }
+    PkgPorts ports userMsg
+    -> { a | subscriptions : userModel -> Sub userMsg }
     -> Model userMsg userModel
     -> Sub (Msg userMsg)
-subscriptions app (Model model) =
-    Sub.batch [ app.subscriptions model.userModel |> Sub.map UserMsg, app.audioPort.fromJS fromJSPortSub ]
+subscriptions ports app (Model model) =
+    Sub.batch [ app.subscriptions model.userModel |> Sub.map UserMsg, ports.martinsstewart_elm_audio_from_js fromJSPortSub ]
 
 
 decodeLoadError =

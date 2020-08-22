@@ -1,4 +1,4 @@
-port module Ports exposing (..)
+port module PkgPorts exposing (..)
 
 -- This file is an example of what `elm-pkg-js` would generate for the user
 

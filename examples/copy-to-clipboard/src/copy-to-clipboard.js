@@ -1,4 +1,6 @@
-// port supermario_copy_to_clipboard_to_js : String -> Cmd msg
+/* elm-pkg-js
+port supermario_copy_to_clipboard_to_js : String -> Cmd msg
+*/
 
 exports.init = async function(app) {
   app.ports.supermario_copy_to_clipboard_to_js.subscribe(function(text) {

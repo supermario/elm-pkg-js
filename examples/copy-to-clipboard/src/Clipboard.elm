@@ -1,8 +1,3 @@
-{- @elm-pkg-js
-   port supermario_copy_to_clipboard_to_js : String -> Cmd msg
--}
-
-
 module Clipboard exposing (..)
 
 {-| Provides a simple way to hook up Javascript copy-to-clipboard functionality

@@ -1,11 +1,3 @@
-{- @elm-pkg-js
-   import Audio
-   import Json.Encode as Json
-   port martinsstewart_elm_audio_to_js : Json.Value -> Cmd (Audio.Msg msg)
-   port martinsstewart_elm_audio_from_js : (Json.Value -> Audio.Msg msg) -> Sub (Audio.Msg msg)
--}
-
-
 module Audio exposing
     ( elementWithAudio, documentWithAudio, applicationWithAudio, Model, Msg
     , AudioCmd, loadAudio, LoadError(..), Source, cmdMap, cmdBatch, cmdNone

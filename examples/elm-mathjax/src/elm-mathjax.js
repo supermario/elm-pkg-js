@@ -1,3 +1,6 @@
+/* @elm-pkg-js
+*/
+
 exports.init = async function(app) {
 
   var mathjaxJs = document.createElement('script')

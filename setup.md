@@ -1,9 +1,9 @@
 
 ## Setting up `elm-pkg-js` in a Javascript project.
 
-Elm packages that follow the `elm-pkg-js` spec provide Port based functionality that relies on some external Javascript.
+Elm packages that follow the `elm-pkg-js` spec provide Port-based functionality that relies on some external Javascript.
 
-`elm-pkg-js` automates the retrieval, verification and inclusion of that Javascript.
+`elm-pkg-js` automates the retrieval, verification and inclusion of that Javascript into an Elm project.
 
 
 ### Adding generated JS
@@ -44,7 +44,7 @@ update msg model =
 
 
 
-## Verifying `elm-pkg-js` Javascript contents
+### Verifying `elm-pkg-js` Javascript contents
 
 ```
 elm-pkg-js verify

@@ -2,19 +2,23 @@
 ## Proposal for the `elm-pkg-js` specification.
 
 
+
 ### Overview
 
-An `elm-pkg-js` compliant package called `author-name/my-package` must:
+An `elm-pkg-js` compliant package called `author-name/my-package-name` must:
 
-1. Include its JS in a single, un-minified `src/my-package.js` source file
+1. Include its JS in a single, un-minified `src/my-package-name.js` source file
 2. Export an async `init` function, that takes an instantiated Elm application as argument
 3. Provide type signatures for any `in` or `out` ports it depends on, as well as any imports required for the port signatures.
 
 The details are elaborated below.
 
-#### 1. Include its JS in a single, un-minified `src/my-package.js` source file
 
-TODO: #4
+
+#### 1. Include its JS in a single, un-minified `src/my-package-name.js` source file
+
+TODO: Specify [Browser Compatibility](https://github.com/supermario/elm-pkg-js/issues/4)
+
 
 
 #### 2. Export an async `init` function, that takes an instantiated Elm application as argument
@@ -25,7 +29,8 @@ exports.init = async function init(app) {
 }
 ```
 
-The `async` allows for multiple `elm-pkg-js` packages to be loaded together without blocking each other. TODO: #3.
+The `async` allows for multiple `elm-pkg-js` packages to be loaded together without blocking each other. TODO: [Understand and document the port init lifecycle](https://github.com/supermario/elm-pkg-js/issues/3).
+
 
 
 #### 3. Provide a commented type signature for any `in` or `out` ports it depends on
@@ -39,7 +44,7 @@ The following transformation from package name to port name happens:
    - `martinsstewart_elm_audio_to_js`
    - `martinsstewart_elm_audio_from_js`
 
-Then the following ports file definition is set at the top of the JS file.
+Then the following ports file definition is set at the top of the `src/my-package-name.js` file, including any required imports (which must always be qualified to prevent collisions).
 
 ```javascript
 /* elm-pkg-js
@@ -50,12 +55,13 @@ port martinsstewart_elm_audio_from_js : (Json.Encode.Value -> Audio.Msg msg) -> 
 */
 ```
 
-If the package uses no ports, there is an empty annotation:
+If the package uses no ports, then an empty annotation is required:
 
 ```javascript
 /* elm-pkg-js
 */
 ```
+
 
 
 ### Tooling auto-generation
@@ -81,7 +87,7 @@ elm-pkg-js install supermario/copy-to-clipboard
 
 This package includes 45 lines of Javascript, which you can review here:
 
-<https://github.com/supermario/elm-pkg-js/blob/d7f937c6f7638b1a730b4d4361ac23a7d2673330/examples/copy-to-clipboard/src/copy-to-clipboard.js>
+<https://github.com/supermario/elm-pkg-js/blob/8ec1ef89d99249fc6ce180d052cad8e88af77e84/examples/copy-to-clipboard/src/copy-to-clipboard.js>
 
 Are you sure you want to add this to elm-pkg-js-includes.js? [Y/N] y
 
@@ -94,6 +100,9 @@ If this is your first `elm-pkg-js` addition, follow the setup steps:
 
 https://github.com/supermario/elm-pkg-js/blob/master/setup.md
 ```
+
+See [setup.md](setup.md) for an overview of what user setup would look like.
+
 
 
 ### Optional

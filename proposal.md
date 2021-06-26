@@ -58,9 +58,12 @@ port martinsstewart_elm_audio_from_js : (Json.Encode.Value -> Audio.Msg msg) -> 
 If the package uses no ports, then an empty annotation is required:
 
 ```javascript
-/* elm-pkg-js
-*/
+/* elm-pkg-js */
 ```
+
+### Examples
+
+See the [examples](https://github.com/supermario/elm-pkg-js/tree/master/examples) folder for Elm packages that include `elm-pkg-js spec` compliant JS as per this proposal.
 
 
 

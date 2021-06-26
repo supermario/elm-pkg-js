@@ -36,11 +36,11 @@ There are a number of existing libraries for port interop (see Prior Art) but no
 
 ## Scope
 
-Initially the goal is this works with something non-intrusive i.e. Parcel. The idea is being tested out by a few people experimentally within the Lamdera alpha.
+Initially the goal is this works with something non-intrusive i.e. Parcel. The idea is being tested out by a few people experimentally with [Lamdera](https://lamdera.com).
 
 If we're happy with the design, it might make sense to share it with Elm community on Discourse as a general proposal for "packages-including-JS".
 
-In that broader context, it would probably be nice to have this system work nicely for all JS package management approaches (i.e. webpack, parcel, gulp, browserify, etc).
+In that broader context, it would probably be nice to have this system work nicely regardless of JS bundling/minification approaches (webpack, parcel, gulp, browserify, etc).
 
 
 
@@ -69,13 +69,17 @@ We'll refine these goals as we learn more.
 - Get us closer to the notion of "good" candidate packages to be possibly included into `elm/*` or `elm-explorations/*` with Kernel code in future, or at least clearly showcase the gaps/limitations without
 - Open up possibility for community-reviewed and vetted JS
 - Support existing Elm philosophy on JS integration with improved ergonomics
-
+- Simpler security considerations when evaluating an elm-pkg-js package, in contrast to `npm`.
 
 
 ## Proposal
 
 Check out the [Proposal](proposal.md) for a work-in-progress description of the specification and tooling behaviour.
 
+
+## Examples
+
+See the [examples](https://github.com/supermario/elm-pkg-js/tree/master/examples) folder for Elm packages that include `elm-pkg-js spec` compliant JS as per the [Proposal](proposal.md).
 
 
 ## Clarifications
@@ -84,13 +88,14 @@ Check out the [Proposal](proposal.md) for a work-in-progress description of the 
 
 `elm-pkg-js` would be a specialised tool, i.e similar to [elm-json](https://github.com/zwilias/elm-json#readme). So "compile time" in this context means "when the user runs `elm-pkg-js`", and not some extension to the Elm compiler.
 
-In the Lamdera context, we'd possibly bake this functionality directly into the `lamdera` binary, so "compile time" would then actually mean compile time.
+In the Lamdera context, we'd possibly bake this functionality directly into the `lamdera` binary, so "compile time" would actually mean compile time in that specific application.
 
 In either case, the design goals would ideally be the same, and work against the same specification.
 
-### Non-Package JS
 
-This initiative isn't about solving "user added JS" (in contrast to "package added JS"), though perhaps a design here might lead to a nice encapsulation of user JS for some circumstances too.
+### Non-package JS
+
+This initiative isn't about solving "user-added JS" (in contrast to "package-added JS"), though perhaps a design here might lead to a nice encapsulation of user JS for some circumstances too.
 
 When user JS in a project comes into play we also have to consider their entire environment, which is extremely difficult to unify for (i.e. say user project is Rails as a backend and Webpack as build, or some completely different environment we don't anticipate, or they're injecting Elm progressively into an existing JS app with it's own setup, assumptions, build pipeline, etc).
 

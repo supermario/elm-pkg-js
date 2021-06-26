@@ -137,3 +137,17 @@ Note: unsuitable as it expects functions to be stored in the msg and model types
 #### [elm-community/js-integration-examples](https://github.com/elm-community/js-integration-examples)
 
 This repository doesn't directly address any of the above design points but it does have sample JS integrations that we can validate against whatever candidate solutions we come up with here.
+
+
+#### [elm-ts-interop](https://elm-ts-interop.com/)
+
+`elm-ts-interop` greatly improves the ergonomics of a Typescript <-> Elm boundary via ports, and is a great choice for user-land JS.
+
+It might make less sense for `elm-pkg-js`'s focus (JS included with Elm packages), as it would mean:
+
+- Forcing the use of Typescript, thus making some transpilation tooling mandatory
+- Requiring a dependency on [`elm-ts-json`](https://package.elm-lang.org/packages/dillonkearns/elm-ts-json)
+
+Perhaps authors could apply `elm-ts-interop` electively on more complex JS inclusions, but it seems to make most sense that the final output pulled in by `elm-pkg-js` is plain JS, and that's also what user's are reviewing in terms of security risk to add to their project.
+
+Definitely a tool to keep an eye on however as things develop.

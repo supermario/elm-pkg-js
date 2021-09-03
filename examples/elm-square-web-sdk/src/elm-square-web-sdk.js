@@ -23,21 +23,18 @@ exports.init = async function (app) {
   var squareWebSdk = document.createElement("script");
   squareWebSdk.type = "text/javascript";
   squareWebSdk.src = "https://sandbox.web.squarecdn.com/v1/square.js";
+  squareWebSdk.onload = loadFast;
   document.head.appendChild(squareWebSdk);
 
-  var fastScript = document.createElement("script");
-  fastScript.type = "module";
-  fastScript.innerHTML = `
-  import * as FAST from "https://unpkg.com/@microsoft/fast-element";
-  window.FAST = FAST;`;
-  document.head.appendChild(fastScript);
-
-  // This delay is to give time for the injected scripts
-  // to download and run. Not ideal, but it does work.
-  setTimeout(() => initSquareWebSdk(app, window.FAST), 1000);
+  function loadFast() {
+    var fastScript = document.createElement("script");
+    fastScript.type = "module";
+    fastScript.innerHTML = `import * as FAST from "https://unpkg.com/@microsoft/fast-element";window.initSquareWebSdkComponent(FAST)`;
+    document.head.appendChild(fastScript);
+  }
 };
 
-function initSquareWebSdk(app, { FASTElement, html }) {
+function initSquareWebSdkComponent(app, { FASTElement, html }) {
   // Generate a (semi) unique id for use later
   const elementId = `card-input-${Date.now().toString()}`;
   // Define a template for the view of the element
@@ -74,3 +71,4 @@ function initSquareWebSdk(app, { FASTElement, html }) {
     }
     FASTElement.define(SquarePaymentCardInput);
 }
+window.initSquareWebSdkComponent = initSquareWebSdkComponent;

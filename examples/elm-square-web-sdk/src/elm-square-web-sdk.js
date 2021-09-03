@@ -3,14 +3,14 @@ port wolfadex_elm_square_web_sdk_to_js : () -> Cmd msg
  */
 
 /**
- * We're using https://hybrids.js.org to create a basic
+ * We're using https://www.fast.design/docs/fast-element/getting-started to create a basic
  * custom element wrapper around the Square Web Payments SDK.
  */
 
 exports.init = async function (app) {
   // import("https://sandbox.web.squarecdn.com/v1/square.js").then(() => {
-  //   import("https://unpkg.com/hybrids@^6").then((hybrids) => {
-  //     initSquareWebSdk(app, hybrids);
+  //   import("hhttps://unpkg.com/@microsoft/fast-element").then((FAST) => {
+  //     initSquareWebSdk(app, FAST);
   //   });
   // });
 
@@ -25,53 +25,49 @@ exports.init = async function (app) {
   squareWebSdk.src = "https://sandbox.web.squarecdn.com/v1/square.js";
   document.head.appendChild(squareWebSdk);
 
-  var hybridsScript = document.createElement("script");
-  hybridsScript.type = "module";
-  hybridsScript.innerHTML = `
-  import * as hybrids from "https://unpkg.com/hybrids@^6";
-  window.hybrids = hybrids;`;
-  document.head.appendChild(hybridsScript);
+  var fastScript = document.createElement("script");
+  fastScript.type = "module";
+  fastScript.innerHTML = `
+  import * as FAST from "https://unpkg.com/@microsoft/fast-element";
+  window.FAST = FAST;`;
+  document.head.appendChild(fastScript);
 
   // This delay is to give time for the injected scripts
   // to download and run. Not ideal, but it does work.
-  setTimeout(() => initSquareWebSdk(app, window.hybrids), 1000);
+  setTimeout(() => initSquareWebSdk(app, window.FAST), 1000);
 };
 
-function initSquareWebSdk(app, { define, html }) {
+function initSquareWebSdk(app, { FASTElement, html }) {
   // Generate a (semi) unique id for use later
   const elementId = `card-input-${Date.now().toString()}`;
-  let _payments;
-  let _card;
+  // Define a template for the view of the element
+  const template = html`<span id="${elementId}"></span>`;
+  
+  class SquarePaymentCardInput extends FASTElement {
+      static definition = {
+        name: "square-payment-card-input",
+        shadowOptions: null, // We can't use ShadowDOM because it hides the target element from the Square SDK
+        template: template,
+        attributes: ["application-id", "location-id"],
+      };
 
-  // Define our custom element to wrap the Square card input
-  define({
-    // The name of the node in HTML land
-    tag: "square-payment-card-input",
-    applicationId: "",
-    locationId: "",
-    content: () => html`<div id="${elementId}">${attachCardInput}</div>`,
-  });
-
-  // This function allows us to attach to the DOM
-  function attachCardInput(host) {
-    // Create a new `payments` object
-    _payments = Square.payments(host.applicationId, host.locationId);
-    // Create a new `card` object
-    _card = await _payments.card();
-    // Attach the card to the DOM
-    await _card.attach(`#${elementId}`);
-
-    // Listen for request from Elm to generate a payment token
-    app.ports.wolfadex_elm_square_web_sdk_to_js.subscribe(async function () {
-      // Make sure the `card` object exists before trying to use it
-      if (_card) {
-        // Attempt to get a token
-        const result = await _card.tokenize();
-        // Send the response back to Elm by way of a custom event
-        host.dispatchEvent(
-          new CustomEvent("square-payment-token", { detail: result })
+      async connectedCallback() {
+        super.connectedCallback();
+        const payments = Square.payments(
+          this.getAttribute("application-id"),
+          this.getAttribute("location-id")
         );
+        const card = await payments.card({
+          style: this.styling,
+        });
+        await card.attach(`#${elementId}`);
+        app.ports.wolfadex_elm_square_payment_form_to_js.subscribe(async () => {
+          const result = await card.tokenize();
+          this.dispatchEvent(
+            new CustomEvent("square-payment-token", { detail: result })
+          );
+        });
       }
-    });
-  }
+    }
+    FASTElement.define(SquarePaymentCardInput);
 }

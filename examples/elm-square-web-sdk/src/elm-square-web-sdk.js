@@ -48,11 +48,14 @@ function initSquareWebSdk(app, { FASTElement, html }) {
         name: "square-payment-card-input",
         shadowOptions: null, // We can't use ShadowDOM because it hides the target element from the Square SDK
         template: template,
+        // Define the attributes we need to pass in
         attributes: ["application-id", "location-id"],
       };
 
       async connectedCallback() {
         super.connectedCallback();
+        
+        // Build out Square card input
         const payments = Square.payments(
           this.getAttribute("application-id"),
           this.getAttribute("location-id")

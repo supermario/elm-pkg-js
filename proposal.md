@@ -115,8 +115,8 @@ These might not need to be part of the spec at all, but are interesting to note.
 - Export an async `upgrade` function, that takes an instantiated Elm application as argument. This can be used in environments where hot-reload is used with type-change awareness.
 
   ```
-  exports.init = async function init(app) {
-      // package javascript goes here
+  exports.upgrade = async function upgrade(app) {
+      // package javascript goes here, potentially re-using already initialised variables or context
   }
   ```
 

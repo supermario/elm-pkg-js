@@ -8,7 +8,7 @@
 An `elm-pkg-js` compliant package called `author-name/my-package-name` must:
 
 1. Include its JS in a single, un-minified `src/my-package-name.js` source file
-2. Export an async `init` function, that takes an instantiated Elm application as argument
+2. Export a synchronous `init` function, that takes an instantiated Elm application as argument
 3. Provide type signatures for any `in` or `out` ports it depends on, as well as any imports required for the port signatures.
 
 The details are elaborated below.
@@ -21,16 +21,15 @@ TODO: Specify [Browser Compatibility](https://github.com/supermario/elm-pkg-js/i
 
 
 
-#### 2. Export an async `init` function, that takes an instantiated Elm application as argument
+#### 2. Export a synchronous `init` function, that takes an instantiated Elm application as argument
 
 ```
-exports.init = async function init(app) {
+exports.init = function init(app) {
     // package javascript goes here
 }
 ```
 
-The `async` allows for multiple `elm-pkg-js` packages to be loaded together without blocking each other. TODO: [Understand and document the port init lifecycle](https://github.com/supermario/elm-pkg-js/issues/3).
-
+Any subscriptions need to be added synchronously otherwise [there can be issues](#14).
 
 
 #### 3. Provide a commented type signature for any `in` or `out` ports it depends on

@@ -24,7 +24,7 @@ TODO: Specify [Browser Compatibility](https://github.com/supermario/elm-pkg-js/i
 #### 2. Export a synchronous `init` function, that takes an instantiated Elm application as argument
 
 ```
-exports.init = function init(app) {
+export function init(app) {
     // package javascript goes here
 }
 ```

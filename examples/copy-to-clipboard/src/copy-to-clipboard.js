@@ -2,7 +2,7 @@
 port supermario_copy_to_clipboard_to_js : String -> Cmd msg
 */
 
-exports.init = function(app) {
+export function init(app) {
   app.ports.supermario_copy_to_clipboard_to_js.subscribe(async function(text) {
     copyTextToClipboard(text)
   })

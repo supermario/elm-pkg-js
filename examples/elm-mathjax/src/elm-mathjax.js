@@ -1,7 +1,7 @@
 /* @elm-pkg-js
 */
 
-exports.init = function(app) {
+export function init(app) {
 
   var mathjaxJs = document.createElement('script')
   mathjaxJs.type = 'text/javascript'

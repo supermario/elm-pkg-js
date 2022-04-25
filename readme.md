@@ -1,6 +1,3 @@
-### NOT FOR SHARING. Do not post on reddit, twitter, HN, discourse, slack, etc.
-
-
 # `elm-pkg-js`
 
 _**A standard for shipping simple JS with Elm Packages**_
@@ -8,6 +5,12 @@ _**A standard for shipping simple JS with Elm Packages**_
 
 This repo explores the possibility of an API/standard/spec for Elm packages that provide JS/ports, as well as tooling to make adding that JS/ports to projects seamless and (fully!) type safe.
 
+
+## Status
+
+The idea is being tested out with a [Labs implementation in Lamdera](https://dashboard.lamdera.app/docs/elm-pkg-js).
+
+Contributions to `examples` are welcome, particularly if you have a use-case that would be challenging/impossible for the elm-pkg-js proposed approach.
 
 
 ## Problem statement

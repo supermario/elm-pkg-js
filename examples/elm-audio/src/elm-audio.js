@@ -5,7 +5,7 @@ port martinsstewart_elm_audio_to_js : Json.Encode.Value -> Cmd (Audio.Msg msg)
 port martinsstewart_elm_audio_from_js : (Json.Encode.Value -> Audio.Msg msg) -> Sub (Audio.Msg msg)
 */
 
-export function init(app)
+exports.init = async function(app)
 {
     window.AudioContext = window.AudioContext || window.webkitAudioContext || false;
     if (window.AudioContext) {
